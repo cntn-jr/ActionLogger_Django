@@ -1,0 +1,4 @@
+Django
+psycopg2
+Pillow #modelsでimageFieldを使うときに必要
+mysqlclient   # pythonでMySQLに接続するためのドライバ

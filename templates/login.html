@@ -1,0 +1,28 @@
+{% extends 'base_blank.html' %}
+{% block header %}
+    <div class="alert alert-secondary mb-0" role="alert">
+        <h3 class="alert-heading">Wellcome Back!!</h3>
+        <p class='ml-5'>あなたのIDとパスワードを入力してサインインしましょう</p>
+    </div>
+{% endblock header %}
+{% block content %}
+
+    <form class="form-signin container mt-5 col-5" method='post'>
+        {% csrf_token %}
+        <div class="text-center mb-4">
+            <h1 class="h3 mb-3 font-weight-normal">Action Logger</h1>
+            <p class='text-red'>{{error}}</p>
+        </div>
+
+        <div class="form-label-group">
+            <input type="text" id="inputEmail" class="form-control" placeholder="User ID" name='username' required autofocus>
+            <label for="inputEmail">ユーザID</label>
+        </div>
+
+        <div class="form-label-group">
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" name='password' required>
+            <label for="inputPassword">パスワード</label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">サインイン</button>
+    </form>
+{% endblock content %}
