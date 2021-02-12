@@ -13,7 +13,7 @@ class SiteUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            userId=userId,
+            userId=self.normalize_username(userId),
         )
 
         user.set_password(password)
@@ -34,7 +34,7 @@ class SiteUserManager(BaseUserManager):
         return user
 
 class SiteUser(AbstractBaseUser):
-    userId_regix=RegexValidator(regex='^[0-9]{4-10}$')
+    userId_regix=RegexValidator(regex='^[a-zA-Z0-9-_]{4-10}$')
     userId = models.CharField(
         primary_key=True,
         # validators=[userId_regix],

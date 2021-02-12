@@ -12,6 +12,17 @@
         <title>{{pageTitle}} -ActionLogger-</title>
     </head>
     <body>
+        <div class="alert alert-secondary mb-0" role="alert">
+            <h3 class="alert-heading">
+                <a class='alert-link nav-link' href='{% url 'topPage' %}'>DashBoard</a>
+            </h3>
+            <p class='ml-5'></p>
+            <div class='userInfo text-right'>
+                <a class='alert-link' href='{% url 'updateUser' %}'>
+                    {{ loginUser.lastName }}　{{ loginUser.firstName }}
+                </a>
+            </div>
+        </div>
         {% block header %}
         {% endblock header %}
         <div class="container-fluid">
@@ -20,7 +31,7 @@
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#">
+                                <a class="nav-link" href="{% url 'topPage' %}">
                                     <span data-feather="home"></span>
                                     <!-- Dashboard <span class="sr-only">(current)</span> -->
                                     ダッシュボード <span class="sr-only">(現在位置)</span>
@@ -67,9 +78,9 @@
                         </h6>
                         <ul class="nav flex-column mb-2">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href='{% url 'updateUser' %}'>
                                     <!-- Current month -->
-                                    今月
+                                    ユーザ情報
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -85,9 +96,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{% url 'logout' %}">
                                     <!-- Year-end sale -->
-                                    年末のセール
+                                    ログアウト
                                 </a>
                             </li>
                         </ul>
