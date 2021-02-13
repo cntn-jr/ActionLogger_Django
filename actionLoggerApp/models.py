@@ -4,7 +4,7 @@ from django.core.validators import MinLengthValidator, RegexValidator
 
 # Create your models here.
 class SiteUserManager(BaseUserManager):
-    def create_user(self, userId, password=None):
+    def create_user(self, userId, password=None, firstName=None, lastName=None, email=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -13,7 +13,11 @@ class SiteUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            userId=self.normalize_username(userId),
+            userId=userId,
+            password=password,
+            firstName=firstName,
+            lastName=lastName,
+            email=email
         )
 
         user.set_password(password)
@@ -42,13 +46,9 @@ class SiteUser(AbstractBaseUser):
     )
     firstName=models.CharField(
         max_length=15,
-        null=True,
-        blank=True,
     )
     lastName=models.CharField(
         max_length=15,
-        null=True,
-        blank=True,
     )
     address=models.CharField(
         max_length=40,
@@ -64,7 +64,7 @@ class SiteUser(AbstractBaseUser):
     )
     email=models.EmailField(
         max_length=30,
-        blank=True,
+        unique=True,
     )
     is_active=models.BooleanField(default=True)
     is_admin=models.BooleanField(default=False)

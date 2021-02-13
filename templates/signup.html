@@ -1,0 +1,40 @@
+{% extends 'base_simple.html' %}
+{% block header %}
+    <div class="alert alert-secondary mb-0" role="alert">
+        <h3 class="alert-heading">It’s an honor to meet you!!</h3>
+        <p class='ml-5'>あなたにお会いできて、光栄です</p>
+    </div>
+{% endblock header %}
+{% block content %}
+    <form class="form-signin container mt-5 col-5" method='post'>
+    {% csrf_token %}
+        <div class="text-center mb-4">
+                <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
+                <p class='text-red'>{{error}}</p>
+        </div>
+        <div class="form-group">
+                <label for="exampleFormControlInput1">User ID</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name='userId'>
+        </div>
+        <div class="form-group">
+                <label for="exampleFormControlInput1">Password</label>
+                <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="" name='password'>
+        </div>
+        <div class="form-group row">
+            <div class='col'>
+                <label for="exampleFormControlInput1">First Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name='firstName'>
+            </div>
+            <div class='col'>
+                <label for="exampleFormControlInput1">Last Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name='lastName'>
+            </div>
+        </div>
+        <div class="form-group">
+                <label for="exampleFormControlInput1">Email</label>
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="" name='email'>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">CREATE</button>
+        <a class="nav-link active text-right mt-2" href="{% url 'login' %}">ログイン</a>
+    </form>
+{% endblock content %}

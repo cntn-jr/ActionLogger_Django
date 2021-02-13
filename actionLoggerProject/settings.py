@@ -126,4 +126,4 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'actionLoggerApp.SiteUser'
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'login'#ログインしていないときにここに飛ぶ

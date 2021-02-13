@@ -1,4 +1,4 @@
-{% extends 'base_blank.html' %}
+{% extends 'base_simple.html' %}
 {% block header %}
     <div class="alert alert-secondary mb-0" role="alert">
         <h3 class="alert-heading">Wellcome Back!!</h3>
@@ -7,7 +7,7 @@
 {% endblock header %}
 {% block content %}
 
-    <form class="form-signin container mt-5 col-5" method='post'>
+    <form class="form-signin container mt-5 col-4" method='post'>
         {% csrf_token %}
         <div class="text-center mb-4">
             <h1 class="h3 mb-3 font-weight-normal">Action Logger</h1>
@@ -15,14 +15,15 @@
         </div>
 
         <div class="form-label-group">
+            {% comment %} <label for="inputEmail">ユーザID</label> {% endcomment %}
             <input type="text" id="inputEmail" class="form-control" placeholder="User ID" name='username' required autofocus>
-            <label for="inputEmail">ユーザID</label>
         </div>
 
         <div class="form-label-group">
+            {% comment %} <label for="inputPassword">パスワード</label> {% endcomment %}
             <input type="password" id="inputPassword" class="form-control" placeholder="Password" name='password' required>
-            <label for="inputPassword">パスワード</label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">サインイン</button>
+        <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">サインイン</button>
+        <a class="nav-link active text-right mt-2" href="{% url 'signup' %}">サインアップ</a>
     </form>
 {% endblock content %}
