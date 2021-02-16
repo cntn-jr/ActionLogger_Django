@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MinLengthValidator, RegexValidator
+from django.utils import timezone
 
 # Create your models here.
 class SiteUserManager(BaseUserManager):
@@ -91,3 +92,24 @@ class SiteUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+class ActionLog(models.Model):  #行動履歴のモデル
+    userId=models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+    #SiteUserモデルから参照、on_delete引数は削除時の挙動を指定している
+    departureTime=models.DateTimeField(default=timezone.now)#出発時刻
+    goHomeTime=models.DateTimeField(default=timezone.now)#帰宅時刻
+    place=models.TextField(
+        max_length=200,
+        blank=True,
+        null=True,
+    )
+    reason=models.TextField(
+        max_length=200,
+        blank=True,
+        null=True,
+    )
+    remarks=models.TextField(
+        max_length=200,
+        blank=True,
+        null=True,
+    )

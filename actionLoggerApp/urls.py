@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser
+from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction
 
 urlpatterns = [
     path('signup/', signupfunc, name='signup'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('updateUser/', updateUserfunc, name='updateUser'),
     path('logout/', logoutfunc, name='logout'),
     path('deleteUser/', deleteUser, name='deleteUser'),
+    path('createAction/', createAction, name='createAction'),
 ]

@@ -19,7 +19,7 @@
             <p class='ml-5'></p>
             <div class='userInfo text-right'>
                 <a class='alert-link' href='{% url 'updateUser' %}'>
-                    {{ loginUser.lastName }}　{{ loginUser.firstName }}
+                    {{ request.user.lastName }}　{{ request.user.firstName }}
                 </a>
             </div>
         </div>
@@ -37,8 +37,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    注文
+                                <a class="nav-link" href="{% url 'createAction' %}">
+                                    行動提出
                                 </a>
                             </li>
                             <li class="nav-item">
