@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from .models import SiteUser, ActionLog
-from .myfunc.myfunc import isTime
+from .myfunc.myfunc import isTime, printTopColumn, dateFormat
 # Create your views here.
 def signupfunc(request):
     if request.method=='GET':
@@ -46,10 +46,16 @@ def logoutfunc(request):
 @login_required #ユーザがログインしていれば
 # トップページ
 def topPagefunc(request):
-    myLogs={}
+    myLogs=ActionLog.objects.filter(userId=request.user.userId).order_by('submitTime')[:5]
     # if ActionLog.objects.filter(userId=request.user.userId):#存在していれば
     #     myLogs=ActionLog.objects.get(userId=request.user.userId)
-    return render(request, 'topPage.html', {'pageTitle':'Dashboard'})
+    for log in myLogs:
+        log.departureTime = dateFormat(log.departureTime)
+        log.goHomeTime = dateFormat(log.goHomeTime)
+        log.place = printTopColumn(log.place)
+        log.reason = printTopColumn(log.reason)
+        log.remarks = printTopColumn(log.remarks)
+    return render(request, 'topPage.html', {'pageTitle':'Dashboard', 'myLogs':myLogs})
 
 @login_required
 # ユーザの情報を更新
@@ -78,7 +84,9 @@ def deleteUser(request):
 
 @login_required
 def createAction(request):
+    logInfo = {}
     if request.method=='POST':
+        #POST通信の場合
         userId=SiteUser.objects.get(userId=request.user.userId)#ユーザIDではなくインスタンスを設定しなければならない
         departureMonth=request.POST['departureMonth']
         departureDay=request.POST['departureDay']
@@ -88,14 +96,17 @@ def createAction(request):
         homeDay=request.POST['homeDay']
         homeTime=request.POST['homeTime']
         homeDate=isTime(homeMonth, homeDay, homeTime)
-        if( departureDate.second == 30 | homeDate.second == 30):
-            return render(request, 'createAction.html',{'pageTitle':'Create Action', 'error':'正確な日付を入力してください'})
         place=request.POST['place']
         reason=request.POST['reason']
         remarks=request.POST['remarks']
+        if( (departureDate.second == 30 | homeDate.second == 30) | (departureDate > homeDate)):
+            #正当な値（日付）が入力されなかった場合
+            logInfo = { 'departureMonth' : departureMonth,'departureDay' : departureDay,'departureTime' : departureTime,'homeMonth' : homeMonth,'homeDay' : homeDay,'homeTime' : homeTime,'place' : place,'reason' : reason,'remarks' : remarks }
+            return render(request, 'createAction.html',{'pageTitle':'Create Action', 'error':'正確な日付を入力してください', 'logInfo':logInfo})
+        #新しいオブジェクトの生成
         log=ActionLog(userId=userId, place=place, reason=reason, remarks=remarks, departureTime=departureDate, goHomeTime=homeDate)#インスタンスの生成
         log.save()
         return redirect('topPage')
     else:
         #ページの表示
-        return render(request, 'createAction.html',{'pageTitle':'Create Action'})
+        return render(request, 'createAction.html',{'pageTitle':'Create Action', 'logInfo':logInfo})

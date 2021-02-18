@@ -94,10 +94,15 @@ class SiteUser(AbstractBaseUser):
         return self.is_admin
 
 class ActionLog(models.Model):  #行動履歴のモデル
-    userId=models.ForeignKey(SiteUser, on_delete=models.CASCADE)
-    #SiteUserモデルから参照、on_delete引数は削除時の挙動を指定している
-    departureTime=models.DateTimeField(default=timezone.now)#出発時刻
-    goHomeTime=models.DateTimeField(default=timezone.now)#帰宅時刻
+    userId=models.ForeignKey(
+        SiteUser, on_delete=models.CASCADE
+    )#SiteUserモデルから参照、on_delete引数は削除時の挙動を指定している
+    departureTime=models.DateTimeField(
+        default=timezone.now
+    )#出発時刻
+    goHomeTime=models.DateTimeField(
+        default=timezone.now
+    )#帰宅時刻
     place=models.TextField(
         max_length=200,
         blank=True,
@@ -112,4 +117,7 @@ class ActionLog(models.Model):  #行動履歴のモデル
         max_length=200,
         blank=True,
         null=True,
+    )
+    submitTime=models.DateTimeField(
+        default=timezone.now
     )
