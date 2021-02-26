@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from .models import SiteUser, ActionLog
-from .myfunc.myfunc import isTime, printTopColumn, dateFormat
+from .myfunc.myfunc import isTime, dateFormat
 # Create your views here.
 def signupfunc(request):
     if request.method=='GET':
@@ -46,15 +46,15 @@ def logoutfunc(request):
 @login_required #ユーザがログインしていれば
 # トップページ
 def topPagefunc(request):
-    myLogs=ActionLog.objects.filter(userId=request.user.userId).order_by('submitTime')[:5]
+    myLogs=ActionLog.objects.filter(userId=request.user.userId).reverse().order_by('submitTime')[:5]
     # if ActionLog.objects.filter(userId=request.user.userId):#存在していれば
     #     myLogs=ActionLog.objects.get(userId=request.user.userId)
     for log in myLogs:
         log.departureTime = dateFormat(log.departureTime)
         log.goHomeTime = dateFormat(log.goHomeTime)
-        log.place = printTopColumn(log.place)
-        log.reason = printTopColumn(log.reason)
-        log.remarks = printTopColumn(log.remarks)
+        # log.place = printTopColumn(log.place)
+        # log.reason = printTopColumn(log.reason)
+        # log.remarks = printTopColumn(log.remarks)
     return render(request, 'topPage.html', {'pageTitle':'Dashboard', 'myLogs':myLogs})
 
 @login_required
@@ -110,3 +110,21 @@ def createAction(request):
     else:
         #ページの表示
         return render(request, 'createAction.html',{'pageTitle':'Create Action', 'logInfo':logInfo})
+
+@login_required
+def myActions(request):
+    return render(request, 'myActions.html', {'pageTitle':'My Actions'})
+
+@login_required
+def detailAction(request, pk):
+    log = ActionLog.objects.get(pk=pk)
+    log.departureTime = dateFormat(log.departureTime)
+    log.goHomeTime = dateFormat(log.goHomeTime)
+    logUser = SiteUser.objects.get(userId=log.userId)
+    if(request.user == logUser):#オブジェクトの比較　ユーザIDの比較ではうまくいかない
+        return render(request, 'detailAction.html', {'pageTitle':'Detail Action', 'log':log})
+    else:
+        return redirect('error')
+
+def errorfunc(request):
+    return render(request, 'error.html', {'pageTitle':'ERROR'})

@@ -1,0 +1,25 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container col-4 mt-4'>
+        <div class='mt-4'>
+            <p>出発時間</p>
+            <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ log.departureTime }}</p>
+        </div>
+        <div class='mt-4'>
+            <p>帰宅時間</p>
+            <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ log.goHomeTime }}</p>
+        </div>
+        <div class='mt-4'>
+            <p>場所</p>
+            <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ log.place }}</p>
+        </div>
+        <div class='mt-4'>
+            <p>理由</p>
+            <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ log.reason }}</p>
+        </div>
+        <div class='mt-4'>
+            <p>備考</p>
+            <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ log.remarks }}</p>
+        </div>
+    </div>
+{% endblock content %}

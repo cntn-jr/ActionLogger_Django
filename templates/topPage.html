@@ -6,23 +6,39 @@
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">No.</th>
                     <th scope="col">開始</th>
                     <th scope="col">終了</th>
                     <th scope="col">場所</th>
-                    <th scope="col">理由</th>
-                    <th scope="col">備考</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for log in myLogs %}
                     <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ log.departureTime }}</td>
-                        <td>{{ log.goHomeTime }}</td>
-                        <td>{{ log.place }}</td>
-                        <td>{{ log.reason }}</td>
-                        <td>{{ log.remarks }}</td>
+                        <th scope="row">
+                            <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                {{ forloop.counter }}
+                            </a>
+                        </th>
+                        <td class='text-left'>
+                            <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                {{ log.departureTime }}
+                            </a>
+                        </td>
+                        <td class='text-left'>
+                            <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                {{ log.goHomeTime }}
+                            </a>
+                        </td>
+                        <td class='text-left text-truncate'>
+                            <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                {{ log.place }}
+                            </a>
+                        </td>
+                        <td class='text-center'>
+                            <a class="text-reset" href="{% url 'detailAction' log.pk %}">詳細を見る...</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

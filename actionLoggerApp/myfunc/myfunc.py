@@ -10,10 +10,10 @@ def isTime(month, day, time):
         #正当な値が入力されなかった場合
         return datetime.datetime.strptime('2000-1-1 00:00:30','%Y-%m-%d %H:%M:%S')
 
-def printTopColumn(column):
-    if(len(column) > 10):
-        column=column[0:9] + '...'
-    return column
+# def printTopColumn(column):
+#     if(len(column) > 10):
+#         column=column[0:9] + '...'
+#     return column
 
 week_list = ['月','火','水','木','金','土','日']
 def dateFormat(logDate):
