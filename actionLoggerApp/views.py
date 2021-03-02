@@ -5,9 +5,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .models import SiteUser, ActionLog
 from .myfunc.myfunc import isTime, dateFormat
+from django.utils.datastructures import MultiValueDictKeyError
+from urllib.parse import urlencode
 # Create your views here.
 def signupfunc(request):
     if request.method=='GET':
@@ -46,16 +48,12 @@ def logoutfunc(request):
 @login_required #ユーザがログインしていれば
 # トップページ
 def topPagefunc(request):
-    myLogs=ActionLog.objects.filter(userId=request.user.userId).reverse().order_by('submitTime')[:5]
-    # if ActionLog.objects.filter(userId=request.user.userId):#存在していれば
-    #     myLogs=ActionLog.objects.get(userId=request.user.userId)
+    myLogs=ActionLog.objects.filter(userId=request.user.userId).order_by('submitTime').reverse()[:5]
+    myLogsCount = myLogs.count()
     for log in myLogs:
         log.departureTime = dateFormat(log.departureTime)
         log.goHomeTime = dateFormat(log.goHomeTime)
-        # log.place = printTopColumn(log.place)
-        # log.reason = printTopColumn(log.reason)
-        # log.remarks = printTopColumn(log.remarks)
-    return render(request, 'topPage.html', {'pageTitle':'Dashboard', 'myLogs':myLogs})
+    return render(request, 'topPage.html', {'pageTitle':'Dashboard', 'myLogs':myLogs, 'myLogsCount':myLogsCount})
 
 @login_required
 # ユーザの情報を更新
@@ -112,8 +110,42 @@ def createAction(request):
         return render(request, 'createAction.html',{'pageTitle':'Create Action', 'logInfo':logInfo})
 
 @login_required
-def myActions(request):
-    return render(request, 'myActions.html', {'pageTitle':'My Actions'})
+def myActionsfunc(request):
+    myActions = ActionLog.objects.filter(userId=request.user.userId).order_by('submitTime').reverse()
+    myActionsCount = myActions.count() #自分の行動履歴の総数
+    pageCount = int( ( myActions.count() - 1 + 10 ) / 10 )  #自分の行動履歴の全ページ数(10件ごと)
+    if(myActionsCount == 0):
+        pageCount = 1
+    redirect_url = reverse('myActions') #nameからURLパターンを取得
+    try:
+        page = int(request.GET['page'])
+        if(page < 1):
+            parameters = urlencode({'page': 1}) #パラメータをURLで使える形に
+            url = f'{redirect_url}?{parameters}' #URL
+            return redirect(url)
+        if(page > pageCount):
+            parameters = urlencode({'page': pageCount})
+            url = f'{redirect_url}?{parameters}'
+            return redirect(url)
+    except ValueError:
+        parameters = urlencode({'page': 1})
+        url = f'{redirect_url}?{parameters}'
+        return redirect(url)
+    except MultiValueDictKeyError:
+        parameters = urlencode({'page': 1})
+        url = f'{redirect_url}?{parameters}'
+        return redirect(url)
+    myActions = myActions[page*10-10:page*10-1]
+    previousPage = page - 1#前ページ
+    if(previousPage < 1):
+        previousPage = 1
+    nextPage = page + 1#次ページ
+    if(nextPage > pageCount):
+        nextPage = pageCount
+    for log in myActions:
+        log.departureTime = dateFormat(log.departureTime)
+        log.goHomeTime = dateFormat(log.goHomeTime)
+    return render(request, 'myActions.html', {'pageTitle':'My Actions', 'myActions':myActions, 'pageCount':range(pageCount), 'myActionsCount':myActionsCount, 'previousPage':previousPage, 'nextPage':nextPage})
 
 @login_required
 def detailAction(request, pk):

@@ -31,33 +31,32 @@
                     <div class="sidebar-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'topPage' %}">
-                                    <span data-feather="home"></span>
-                                    ダッシュボード <span class="sr-only">(現在位置)</span>
+                                <a class="nav-link text-reset" href="{% url 'topPage' %}">
+                                    ダッシュボード
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'createAction' %}">
-                                    行動提出
+                                <a class="nav-link text-reset" href="{% url 'createAction' %}">
+                                    行動履歴の提出
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    商品
+                                <a class="nav-link text-reset" href="{% url 'myActions' %}?page=1">
+                                    行動履歴の表示
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link text-reset" href="#">
                                     お客様
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link text-reset" href="#">
                                     レポート
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link text-reset" href="#">
                                     インテグレーション
                                 </a>
                             </li>
@@ -71,22 +70,22 @@
                         </h6>
                         <ul class="nav flex-column mb-2">
                             <li class="nav-item">
-                                <a class="nav-link" href='{% url 'updateUser' %}'>
+                                <a class="nav-link text-reset" href='{% url 'updateUser' %}'>
                                     ユーザ情報
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link text-reset" href="#">
                                     前四半期
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'deleteUser' %}">
-                                    削除
+                                <a class="nav-link text-reset" href="{% url 'deleteUser' %}">
+                                    アカウント削除
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">
+                                <a class="nav-link text-reset" href="{% url 'logout' %}">
                                     ログアウト
                                 </a>
                             </li>
