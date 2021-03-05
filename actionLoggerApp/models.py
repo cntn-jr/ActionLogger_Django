@@ -121,3 +121,17 @@ class ActionLog(models.Model):  #行動履歴のモデル
     submitTime=models.DateTimeField(
         default=timezone.now
     )
+
+class MgtGroup(models.Model):   #グループのモデル
+    groupId_regex=RegexValidator(regex='^[a-zA-Z0-9_]{8,12}$')
+    groupId=models.CharField(
+        primary_key=True,
+        max_length=12,
+        validators=[groupId_regex],
+    )
+    groupName=models.CharField(
+        max_length=30,
+    )
+    adminUserId=models.ForeignKey(
+        SiteUser,on_delete=models.CASCADE
+    )

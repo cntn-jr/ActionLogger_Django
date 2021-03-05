@@ -6,10 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from .models import SiteUser, ActionLog
+from .models import SiteUser, ActionLog, MgtGroup
 from .myfunc.myfunc import isTime, dateFormat
 from django.utils.datastructures import MultiValueDictKeyError
 from urllib.parse import urlencode
+import re
 # Create your views here.
 def signupfunc(request):
     if request.method=='GET':
@@ -157,6 +158,21 @@ def detailAction(request, pk):
         return render(request, 'detailAction.html', {'pageTitle':'Detail Action', 'log':log})
     else:
         return redirect('error')
+
+@login_required
+def createGroupfunc(request):
+    if(request.method == 'POST'):   #グループの作成処理
+        groupId=request.POST['groupId']
+        groupName=request.POST['groupName']
+        adminUser=request.user
+        groupUserRegex='^[a-zA-Z0-9_]{8,12}$'
+        if(not re.match(groupUserRegex, groupId)):
+            return render(request, 'createGroup.html', {'error':'グループIDは、英数またはアンダーバーのみです。'})
+        group=MgtGroup(groupId=groupId, groupName=groupName, adminUserId=adminUser)
+        group.save()
+        return redirect('topPage')
+    else:   #グループ作成画面の表示
+        return render(request, 'createGroup.html', {})
 
 def errorfunc(request):
     return render(request, 'error.html', {'pageTitle':'ERROR'})
