@@ -21,6 +21,9 @@ def signupfunc(request):
         firstName = request.POST['firstName']
         lastName = request.POST['lastName']
         email = request.POST['email']
+        userIdRegex='^[a-zA-Z0-9_-]{8,12}$'
+        if(not re.match(userIdRegex, userId)):
+            return render(request, 'createGroup.html', {'error':'ユーザIDは、英数、ハイフンまたはアンダーバーのみです。'})
         user=SiteUser.objects.create_user(userId, password, firstName, lastName, email)
         login(request, user)
         return redirect('topPage')
@@ -165,9 +168,9 @@ def createGroupfunc(request):
         groupId=request.POST['groupId']
         groupName=request.POST['groupName']
         adminUser=request.user
-        groupUserRegex='^[a-zA-Z0-9_]{8,12}$'
-        if(not re.match(groupUserRegex, groupId)):
-            return render(request, 'createGroup.html', {'error':'グループIDは、英数またはアンダーバーのみです。'})
+        groupIdRegex='^[a-zA-Z0-9_-]{8,12}$'
+        if(not re.match(groupIdRegex, groupId)):
+            return render(request, 'createGroup.html', {'error':'グループIDは、英数、ハイフンまたはアンダーバーのみです。'})
         group=MgtGroup(groupId=groupId, groupName=groupName, adminUserId=adminUser)
         group.save()
         return redirect('topPage')
