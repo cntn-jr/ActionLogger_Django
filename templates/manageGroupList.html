@@ -1,0 +1,43 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container mt-5'>
+        {% if mgtGroup.count == 0 %}
+            <div class="alert alert-info text-center py-4" role="alert">
+                現在、管理しているグループはありません
+            </div>
+        {% else %}
+            <table class="table col-8 m-auto">
+                <thead class="thead-dark">
+                    <tr>
+                        {% comment %} <th scope="col">グループID</th> {% endcomment %}
+                        <th scope="col">管理グループ</th>
+                        {% comment %} <th scope="col"></th>{% endcomment %}
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in mgtGroup %}
+                        <tr>
+                            {% comment %} <td class='text-left'>
+                                <a href='{% url 'adminGroupDetail' group.groupId %}' class='text-reset'>
+                                    {{ group.groupId }}
+                                </a>
+                            </td> {% endcomment %}
+                            <td class='text-center'>
+                                <a href='{% url 'adminGroupDetail' group.groupId %}' class='text-reset'>
+                                    {{ group.groupName }}
+                                </a>
+                            </td>
+                            {% comment %} <td class='text-center'>
+                                <a class="text-reset" href="{% url 'adminGroupDetail' group.groupId %}">詳細を見る...</a>
+                            </td>{% endcomment %}
+                            <td class='text-center'>
+                                <a class="text-danger" href="{% url 'adminGroupDelete' group.groupId %}">削除する</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock content %}

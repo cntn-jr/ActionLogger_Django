@@ -1,0 +1,16 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container col-4 mt-4'>
+        <form method='POST'>
+            <div class='mt-4'>
+                <p>グループID</p>
+                <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ mgtGroup.groupId }}</p>
+            </div>
+            <div class='mt-4'>
+                <p>グループ名</p>
+                <input class='mx-2 px-4 py-2 form-control border-secondary rounded-pill' id="exampleFormControlInput1" value='{{mgtGroup.groupName}}'>
+            </div>
+            <button class="btn btn-lg btn-info btn-block mt-5 ml-2" type="submit">UPDATE</button>
+        </form>
+    </div>
+{% endblock content %}

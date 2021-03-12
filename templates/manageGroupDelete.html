@@ -1,0 +1,15 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container col-5 mt-3'>
+        <form class='' method='POST'>
+            {% csrf_token %}
+            <div class="alert alert-danger mt-5 pt-3" role="alert">
+                <h4 class="alert-heading text-center">本当に　{{ mgtGroup.groupName }}　を削除しますか？</h4>
+                <p class='text-center'>
+                    削除したグループは元には戻せません
+                </p>
+                <button class="btn btn-danger btn-block col-3 mx-auto my-3" type="submit">DELETE</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

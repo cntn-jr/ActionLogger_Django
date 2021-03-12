@@ -21,9 +21,9 @@ def signupfunc(request):
         firstName = request.POST['firstName']
         lastName = request.POST['lastName']
         email = request.POST['email']
-        userIdRegex='^[a-zA-Z0-9_-]{8,12}$'
+        userIdRegex='^[a-zA-Z0-9_-]{4,10}$'
         if(not re.match(userIdRegex, userId)):
-            return render(request, 'createGroup.html', {'error':'ユーザIDは、英数、ハイフンまたはアンダーバーのみです。'})
+            return render(request, 'signup.html', {'error':'ユーザIDは、英数、ハイフンまたはアンダーバーのみです。'})
         user=SiteUser.objects.create_user(userId, password, firstName, lastName, email)
         login(request, user)
         return redirect('topPage')
@@ -175,7 +175,30 @@ def createGroupfunc(request):
         group.save()
         return redirect('topPage')
     else:   #グループ作成画面の表示
-        return render(request, 'createGroup.html', {})
+        return render(request, 'createGroup.html', {'pageTitle':"CREATE GROUP"})
+
+@login_required
+def adminGroupListfunc(request):
+    manageGroup = MgtGroup.objects.filter(adminUserId=request.user.userId)
+    return render(request, 'manageGroupList.html', {'pageTitle':'GROUP LIST','mgtGroup':manageGroup})
+
+@login_required
+def adminGroupDetailfunc(request, groupId):
+    manageGroup = MgtGroup.objects.get(groupId=groupId)
+    if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
+        return redirect('error')
+    return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup})
+
+@login_required
+def adminGroupDeletefunc(request, groupId):
+    manageGroup = MgtGroup.objects.get(groupId=groupId)
+    if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
+        return redirect('error')
+    if(request.method == 'POST'):
+        manageGroup.delete()
+        return redirect('adminGroupList')
+    else:
+        return render(request, 'manageGroupDelete.html', {'pageTitle':'GROUP DELETE','mgtGroup':manageGroup})
 
 def errorfunc(request):
     return render(request, 'error.html', {'pageTitle':'ERROR'})

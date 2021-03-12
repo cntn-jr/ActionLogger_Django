@@ -39,7 +39,7 @@ class SiteUserManager(BaseUserManager):
         return user
 
 class SiteUser(AbstractBaseUser):
-    userId_regix=RegexValidator(regex='^[a-zA-Z0-9-_]{4-10}$')
+    # userId_regix=RegexValidator(regex='^[a-zA-Z0-9-_]{4-10}$')
     userId = models.CharField(
         primary_key=True,
         # validators=[userId_regix],
@@ -123,11 +123,11 @@ class ActionLog(models.Model):  #行動履歴のモデル
     )
 
 class MgtGroup(models.Model):   #グループのモデル
-    groupId_regex=RegexValidator(regex='^[a-zA-Z0-9_]{8,12}$')
+    # groupId_regex=RegexValidator(regex='^[a-zA-Z0-9_]{8,12}$')
     groupId=models.CharField(
         primary_key=True,
         max_length=12,
-        validators=[groupId_regex],
+        # validators=[groupId_regex],
     )
     groupName=models.CharField(
         max_length=30,
