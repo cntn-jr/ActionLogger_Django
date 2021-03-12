@@ -105,13 +105,13 @@ class ActionLog(models.Model):  #行動履歴のモデル
     )#帰宅時刻
     place=models.TextField(
         max_length=200,
-        blank=True,
-        null=True,
+        null=False,
+        blank=False,
     )
     reason=models.TextField(
         max_length=200,
-        blank=True,
-        null=True,
+        null=False,
+        blank=False,
     )
     remarks=models.TextField(
         max_length=200,
@@ -131,7 +131,23 @@ class MgtGroup(models.Model):   #グループのモデル
     )
     groupName=models.CharField(
         max_length=30,
+        null=False,
+        blank=False,
     )
     adminUserId=models.ForeignKey(
-        SiteUser,on_delete=models.CASCADE
+        SiteUser,on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
+
+class EntryGroup(models.Model):
+    groupId=models.ForeignKey(
+        MgtGroup,on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
+    userId=models.ForeignKey(
+        SiteUser,on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
