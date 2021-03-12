@@ -105,6 +105,14 @@ def createAction(request):
             #正当な値（日付）が入力されなかった場合
             logInfo = { 'departureMonth' : departureMonth,'departureDay' : departureDay,'departureTime' : departureTime,'homeMonth' : homeMonth,'homeDay' : homeDay,'homeTime' : homeTime,'place' : place,'reason' : reason,'remarks' : remarks }
             return render(request, 'createAction.html',{'pageTitle':'Create Action', 'error':'正確な日付を入力してください', 'logInfo':logInfo})
+        if(not re.match('\S', place)):
+            #場所と理由が入力されなかった場合
+            logInfo = { 'departureMonth' : departureMonth,'departureDay' : departureDay,'departureTime' : departureTime,'homeMonth' : homeMonth,'homeDay' : homeDay,'homeTime' : homeTime,'place' : place,'reason' : reason,'remarks' : remarks }
+            return render(request, 'createAction.html',{'pageTitle':'Create Action', 'error':'正確に入力してください', 'logInfo':logInfo})
+        if(not re.match('\S', reason)):
+            #場所と理由が入力されなかった場合
+            logInfo = { 'departureMonth' : departureMonth,'departureDay' : departureDay,'departureTime' : departureTime,'homeMonth' : homeMonth,'homeDay' : homeDay,'homeTime' : homeTime,'place' : place,'reason' : reason,'remarks' : remarks }
+            return render(request, 'createAction.html',{'pageTitle':'Create Action', 'error':'正確に入力してください', 'logInfo':logInfo})
         #新しいオブジェクトの生成
         log=ActionLog(userId=userId, place=place, reason=reason, remarks=remarks, departureTime=departureDate, goHomeTime=homeDate)#インスタンスの生成
         log.save()
