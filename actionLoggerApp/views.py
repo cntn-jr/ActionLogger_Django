@@ -195,7 +195,13 @@ def adminGroupDetailfunc(request, groupId):
     manageGroup = MgtGroup.objects.get(groupId=groupId)
     if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
         return redirect('error')
-    return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup})
+    if(request.method == 'GET'):
+        return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup})
+    else:
+        groupName = request.POST['groupId']
+        manageGroup.groupName = groupName
+        manageGroup.save()
+        return redirect('adminGroupDetail',manageGroup.groupId)
 
 @login_required
 def adminGroupDeletefunc(request, groupId):
