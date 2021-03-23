@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction, detailAction, errorfunc, myActionsfunc, createGroupfunc, adminGroupListfunc, adminGroupDetailfunc, adminGroupDeletefunc
+from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction, detailAction, errorfunc, myActionsfunc, createGroupfunc, adminGroupListfunc, adminGroupDetailfunc, adminGroupDeletefunc, entryGroupfunc
 
 urlpatterns = [
     path('signup/', signupfunc, name='signup'),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('adminGroupList/', adminGroupListfunc, name='adminGroupList'),
     path('adminGroupDetail/<str:groupId>', adminGroupDetailfunc, name='adminGroupDetail'),
     path('adminGroupDelete/<str:groupId>', adminGroupDeletefunc, name='adminGroupDelete'),
+    path('entryGroup/', entryGroupfunc, name='entryGroup'),
     path('error', errorfunc, name='error'),
     path('', topPagefunc, name='topPage')
 ]

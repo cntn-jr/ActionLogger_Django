@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from .models import SiteUser, ActionLog, MgtGroup
+from .models import SiteUser, ActionLog, MgtGroup, EntryGroup
 from .myfunc.myfunc import isTime, dateFormat
 from django.utils.datastructures import MultiValueDictKeyError
 from urllib.parse import urlencode
@@ -213,6 +213,21 @@ def adminGroupDeletefunc(request, groupId):
         return redirect('adminGroupList')
     else:
         return render(request, 'manageGroupDelete.html', {'pageTitle':'GROUP DELETE','mgtGroup':manageGroup})
+
+@login_required
+def entryGroupfunc(request):
+    if(request.method == 'POST'):
+        groupId = request.POST['groupId']
+        group = MgtGroup.objects.filter(groupId=groupId)
+        if(group.count == 0):
+            return render(request, 'entryGroup.html', {'pageTitle':'ENTRY GROUP','error':'検索結果はヒットしませんでした'})
+        adminUserId = MgtGroup.objects.get(groupId=groupId).adminUserId
+        if(request.user == SiteUser.objects.get( userId=adminUserId )):
+            return render(request, 'entryGroup.html', {'pageTitle':'ENTRY GROUP','error':'検索結果はヒットしませんでした'})
+        adminUserName = SiteUser.objects.get( userId=adminUserId ).firstName + ' ' + SiteUser.objects.get( userId=adminUserId ).lastName
+        return render(request, 'entryGroup.html', {'pageTitle':'SEARCH GROUP RESULT','groups':group, 'adminUserName': adminUserName})
+    else:
+        return render(request, 'entryGroup.html', {'pageTitle':'ENTRY GROUP',})
 
 def errorfunc(request):
     return render(request, 'error.html', {'pageTitle':'ERROR'})
