@@ -1,0 +1,14 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container col-5 mt-3'>
+        <form class='' method='POST'>
+            {% csrf_token %}
+            <div class="alert alert-danger mt-5 pt-3" role="alert">
+                <h4 class="alert-heading text-center">{{ group.groupName }}　を退会しますか？</h4>
+                <p class='text-center'>
+                </p>
+                <button class="btn btn-danger btn-block col-3 mx-auto my-3" type="submit">退会</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

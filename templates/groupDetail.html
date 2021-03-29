@@ -1,0 +1,17 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container col-5 mt-3'>
+        <div class="alert alert-info mt-5 py-5" role="alert">
+            <h4 class="alert-heading text-center">グループ名：{{ group.groupName }}</h4>
+            <p class='text-center mt-4'>
+                管理者：{{adminUserName}}
+            </p>
+            <p class='text-center'>
+                参加人数：{{groupNum}}名
+            </p>
+        </div>
+        <div class='text-right pr-2'>
+            <a href='{% url 'groupWithdrawal' group.groupId %}' class='text-danger'>退会</a>
+        </div>
+    </div>
+{% endblock content %}

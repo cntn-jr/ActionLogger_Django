@@ -215,19 +215,57 @@ def adminGroupDeletefunc(request, groupId):
         return render(request, 'manageGroupDelete.html', {'pageTitle':'GROUP DELETE','mgtGroup':manageGroup})
 
 @login_required
-def entryGroupfunc(request):
+def searchGroupfunc(request):
     if(request.method == 'POST'):
         groupId = request.POST['groupId']
         group = MgtGroup.objects.filter(groupId=groupId)
         if(group.count == 0):
-            return render(request, 'entryGroup.html', {'pageTitle':'ENTRY GROUP','error':'検索結果はヒットしませんでした'})
+            return render(request, 'searchGroup.html', {'pageTitle':'ENTRY GROUP','error':'検索結果はヒットしませんでした'})
         adminUserId = MgtGroup.objects.get(groupId=groupId).adminUserId
         if(request.user == SiteUser.objects.get( userId=adminUserId )):
-            return render(request, 'entryGroup.html', {'pageTitle':'ENTRY GROUP','error':'検索結果はヒットしませんでした'})
+            return render(request, 'searchGroup.html', {'pageTitle':'ENTRY GROUP','error':'検索結果はヒットしませんでした'})
         adminUserName = SiteUser.objects.get( userId=adminUserId ).firstName + ' ' + SiteUser.objects.get( userId=adminUserId ).lastName
-        return render(request, 'entryGroup.html', {'pageTitle':'SEARCH GROUP RESULT','groups':group, 'adminUserName': adminUserName})
+        return render(request, 'searchGroup.html', {'pageTitle':'SEARCH GROUP RESULT','groups':group, 'adminUserName': adminUserName})
     else:
-        return render(request, 'entryGroup.html', {'pageTitle':'ENTRY GROUP',})
+        return render(request, 'searchGroup.html', {'pageTitle':'ENTRY GROUP',})
+
+def groupDetailfunc(request, groupId):
+    if(request.method == 'POST'):
+        entryGroup = EntryGroup(groupId=MgtGroup.objects.get(groupId=groupId), userId=request.user)
+        entryGroup.save()
+        return redirect('groupDetail',groupId)
+    else:
+        entryGroup = MgtGroup.objects.get(groupId=groupId)
+        #グループの管理者であれば
+        if(request.user == SiteUser.objects.get(userId=entryGroup.adminUserId)):
+            return redirect('adminGroupDetail', entryGroup.groupId)
+        #グループに参加していれば
+        if(EntryGroup.objects.filter(groupId=groupId,userId=request.user.userId).exists()):
+            adminUserId = entryGroup.adminUserId
+            #グループの管理者名
+            adminUserName = SiteUser.objects.get(userId=adminUserId).firstName + ' ' + SiteUser.objects.get(userId=adminUserId).lastName
+            #グループの参加人数
+            entryGroupNum = EntryGroup.objects.filter(groupId=groupId).count()
+            return render(request, 'groupDetail.html', {'group':entryGroup,'adminUserName':adminUserName,'groupNum':entryGroupNum})
+        #グループへの参加ページ
+        else:
+            return render(request, 'entryGroup.html', {'group':entryGroup,})
+    return redirect('')
+
+@login_required
+def groupWithdrawalfunc(request, groupId):
+    if(request.method == 'GET'):
+        #参加していれば
+        if(EntryGroup.objects.filter(userId=request.user.userId, groupId=groupId).exists()):
+            return render(request, 'groupWithdrawal.html', {'group':MgtGroup.objects.get(groupId=groupId)})
+        #参加していなければ
+        else:
+            return redirect('searchGroup')
+    else:
+        #グループ退会処理
+        entriedGroup = EntryGroup.objects.get(userId=request.user.userId, groupId=groupId)
+        entriedGroup.delete()
+        return redirect('searchGroup')
 
 def errorfunc(request):
     return render(request, 'error.html', {'pageTitle':'ERROR'})
