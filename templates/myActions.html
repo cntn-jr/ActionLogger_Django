@@ -6,40 +6,42 @@
                 現在、提出されている行動履歴はありません
             </div>
         {% else %}
-            <table class="table" style='height:500px'>
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">開始</th>
-                        <th scope="col">終了</th>
-                        <th scope="col">場所</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for log in myActions %}
+            <div style='height:500px'>
+                <table class="table">
+                    <thead class="thead-dark">
                         <tr>
-                            <td class='text-left'>
-                                <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
-                                    {{ log.departureTime }}
-                                </a>
-                            </td>
-                            <td class='text-left'>
-                                <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
-                                    {{ log.goHomeTime }}
-                                </a>
-                            </td>
-                            <td class='text-left text-truncate'>
-                                <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
-                                    {{ log.place }}
-                                </a>
-                            </td>
-                            <td class='text-center'>
-                                <a class="text-reset" href="{% url 'detailAction' log.pk %}">詳細を見る...</a>
-                            </td>
+                            <th scope="col">開始</th>
+                            <th scope="col">終了</th>
+                            <th scope="col">場所</th>
+                            <th scope="col"></th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for log in myActions %}
+                            <tr>
+                                <td class='text-left'>
+                                    <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                        {{ log.departureTime }}
+                                    </a>
+                                </td>
+                                <td class='text-left'>
+                                    <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                        {{ log.goHomeTime }}
+                                    </a>
+                                </td>
+                                <td class='text-left text-truncate'>
+                                    <a href='{% url 'detailAction' log.pk %}' class='text-reset'>
+                                        {{ log.place }}
+                                    </a>
+                                </td>
+                                <td class='text-center'>
+                                    <a class="text-reset" href="{% url 'detailAction' log.pk %}">詳細を見る...</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% if pageCount.stop == 1 %}
             {% else %}
                 <nav aria-label="Page navigation example" class='col-6 mx-auto my-5'>

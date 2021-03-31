@@ -13,5 +13,8 @@
             </div>
             <button class="btn btn-lg btn-info btn-block mt-5 ml-2" type="submit">UPDATE</button>
         </form>
+        <div class='text-right mt-3'>
+            <a class="text-danger" href="{% url 'adminGroupDelete' mgtGroup.groupId %}">削除する</a>
+        </div>
     </div>
 {% endblock content %}

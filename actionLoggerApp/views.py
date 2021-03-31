@@ -250,7 +250,7 @@ def groupDetailfunc(request, groupId):
         #グループへの参加ページ
         else:
             return render(request, 'entryGroup.html', {'group':entryGroup,})
-    return redirect('')
+    return redirect('error')
 
 @login_required
 def groupWithdrawalfunc(request, groupId):
@@ -266,6 +266,11 @@ def groupWithdrawalfunc(request, groupId):
         entriedGroup = EntryGroup.objects.get(userId=request.user.userId, groupId=groupId)
         entriedGroup.delete()
         return redirect('searchGroup')
+
+@login_required
+def entryGroupListfunc(request):
+    entryGroup = EntryGroup.objects.filter(userId=request.user.userId)
+    return render(request, 'entryGroupList.html', {'pageTitle':'ENTRY GROUP LIST', 'entryGroup':entryGroup})
 
 def errorfunc(request):
     return render(request, 'error.html', {'pageTitle':'ERROR'})

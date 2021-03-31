@@ -1,23 +1,23 @@
 {% extends 'base_dashboard.html' %}
 {% block content %}
     <div class='container mt-5'>
-        {% if mgtGroup.count == 0 %}
+        {% if entryGroup.count == 0 %}
             <div class="alert alert-info text-center py-4" role="alert">
-                現在、管理しているグループはありません
+                現在、参加しているグループはありません
             </div>
         {% else %}
             <table class="table col-5 m-auto">
                 <thead class="thead-dark">
                     <tr>
-                        <th scope="col">管理グループ</th>
+                        <th scope="col">参加グループ</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for group in mgtGroup %}
+                    {% for group in entryGroup %}
                         <tr>
                             <td class='text-center'>
-                                <a href='{% url 'adminGroupDetail' group.groupId %}' class='text-reset'>
-                                    {{ group.groupName }}
+                                <a href='{% url 'groupDetail' group.groupId.groupId %}' class='text-reset'>
+                                    {{ group.groupId.groupName }}
                                 </a>
                             </td>
                         </tr>
