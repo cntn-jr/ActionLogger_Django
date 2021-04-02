@@ -1,20 +1,47 @@
 {% extends 'base_dashboard.html' %}
 {% block content %}
-    <div class='container col-4 mt-4'>
-        <form method='POST'>
-            {% csrf_token %}
-            <div class='mt-4'>
-                <p>グループID</p>
-                <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ mgtGroup.groupId }}</p>
+    <div class='container mt-4 col-10'>
+        <div class='d-flex'>
+            <div class='mx-5 col-5'>
+                <form method='POST'>
+                    {% csrf_token %}
+                    <div class='mt-4'>
+                        <p>グループID</p>
+                        <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>{{ mgtGroup.groupId }}</p>
+                    </div>
+                    <div class='mt-4'>
+                        <p>グループ名</p>
+                        <input class='mx-2 px-4 py-2 form-control border-secondary rounded-pill' id="exampleFormControlInput1" value='{{mgtGroup.groupName}}' name='groupName'>
+                    </div>
+                    <button class="btn btn-lg btn-info btn-block mt-5 ml-2" type="submit">UPDATE</button>
+                </form>
+                <div class='text-right mt-3'>
+                    <a class="text-danger" href="{% url 'adminGroupDelete' mgtGroup.groupId %}">削除する</a>
+                </div>
             </div>
-            <div class='mt-4'>
-                <p>グループ名</p>
-                <input class='mx-2 px-4 py-2 form-control border-secondary rounded-pill' id="exampleFormControlInput1" value='{{mgtGroup.groupName}}' name='groupId'>
+            <div class='mx-5  col-5'>
+                <div class='alert alert-primary text-center mt-5 col-4 mx-auto'>
+                    お知らせ
+                </div>
+                <div>
+                {% if groupInformationCount == 0 %}
+                    <div class='text-center alert alert-primary mx-auto mt-4'>現在、お知らせはないです</div>
+                {% else %}
+                    <table class='table'>
+                        {% for info in groupInformation %}
+                        <tr>
+                            <td>
+                                {{info.informationTitle}}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                    <div class='text-right mt-4'>
+                        <a href="#" class="btn btn-outline-primary col-5" role="button" aria-pressed="true">ADD</a>
+                    </div>
+                </div>
             </div>
-            <button class="btn btn-lg btn-info btn-block mt-5 ml-2" type="submit">UPDATE</button>
-        </form>
-        <div class='text-right mt-3'>
-            <a class="text-danger" href="{% url 'adminGroupDelete' mgtGroup.groupId %}">削除する</a>
         </div>
     </div>
 {% endblock content %}

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from .models import SiteUser, ActionLog, MgtGroup, EntryGroup
+from .models import SiteUser, ActionLog, MgtGroup, EntryGroup, GroupInformation
 from .myfunc.myfunc import isTime, dateFormat
 from django.utils.datastructures import MultiValueDictKeyError
 from urllib.parse import urlencode
@@ -196,12 +196,98 @@ def adminGroupDetailfunc(request, groupId):
     if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
         return redirect('error')
     if(request.method == 'GET'):
-        return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup})
+        #お知らせ
+        groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk')[:5]
+        groupInformationCount = groupInformation.count()
+        return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup,  'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount})
     else:
-        groupName = request.POST['groupId']
+        groupName = request.POST['groupName']
         manageGroup.groupName = groupName
         manageGroup.save()
         return redirect('adminGroupDetail',manageGroup.groupId)
+
+@login_required
+def groupInformationListfunc(request, groupId):
+    group = MgtGroup.objects.get(groupId=groupId)
+    information = GroupInformation.objects.filter(groupId=groupId)
+    if(SiteUser.objects.get(userId=group.adminUserId) == request.user):
+        informationCount = information.count() #自分の行動履歴の総数
+        pageCount = int( ( information.count() - 1 + 10 ) / 10 )  #自分の行動履歴の全ページ数(10件ごと)
+        if(informationCount == 0):
+            pageCount = 1
+        redirect_url = reverse('groupInformationList', kwargs={'groupId':groupId}) #nameからURLパターンを取得
+        try:
+            page = int(request.GET['page'])
+            if(page < 1):
+                parameters = urlencode({'page': 1}) #パラメータをURLで使える形に
+                url = f'{redirect_url}?{parameters}' #URL
+                return redirect(url)
+            if(page > pageCount):
+                parameters = urlencode({'page': pageCount})
+                url = f'{redirect_url}?{parameters}'
+                return redirect(url)
+        except ValueError:
+            parameters = urlencode({'page': 1})
+            url = f'{redirect_url}?{parameters}'
+            return redirect(url)
+        except MultiValueDictKeyError:
+            parameters = urlencode({'page': 1})
+            url = f'{redirect_url}?{parameters}'
+            return redirect(url)
+        information = information[page*10-10:page*10-1]
+        previousPage = page - 1#前ページ
+        if(previousPage < 1):
+            previousPage = 1
+        nextPage = page + 1#次ページ
+        if(nextPage > pageCount):
+            nextPage = pageCount
+        return render(request, 'groupInformationList.html', {'pageTitle':'Group Infromation List', 'information':information ,'pageCount':range(pageCount), 'informationCount':informationCount, 'previousPage':previousPage, 'nextPage':nextPage})
+    if(EntryGroup.objects.filter(groupId=groupId, userId=request.user.userId).exists()):
+        informationCount = information.count() #自分の行動履歴の総数
+        pageCount = int( ( information.count() - 1 + 10 ) / 10 )  #自分の行動履歴の全ページ数(10件ごと)
+        if(informationCount == 0):
+            pageCount = 1
+        redirect_url = reverse('groupInformationList', kwargs={'groupId':groupId}) #nameからURLパターンを取得
+        try:
+            page = int(request.GET['page'])
+            if(page < 1):
+                parameters = urlencode({'page': 1}) #パラメータをURLで使える形に
+                url = f'{redirect_url}?{parameters}' #URL
+                return redirect(url)
+            if(page > pageCount):
+                parameters = urlencode({'page': pageCount})
+                url = f'{redirect_url}?{parameters}'
+                return redirect(url)
+        except ValueError:
+            parameters = urlencode({'page': 1})
+            url = f'{redirect_url}?{parameters}'
+            return redirect(url)
+        except MultiValueDictKeyError:
+            parameters = urlencode({'page': 1})
+            url = f'{redirect_url}?{parameters}'
+            return redirect(url)
+        information = information[page*10-10:page*10-1]
+        previousPage = page - 1#前ページ
+        if(previousPage < 1):
+            previousPage = 1
+        nextPage = page + 1#次ページ
+        if(nextPage > pageCount):
+            nextPage = pageCount
+        return render(request, 'groupInformationList.html', {'pageTitle':'Group Infromation List', 'information':information ,'pageCount':range(pageCount), 'informationCount':informationCount, 'previousPage':previousPage, 'nextPage':nextPage})
+    return redirect('error')
+
+@login_required
+def addGroupInformationfunc(request):
+    return render(request, '', {'pageTitle':'ADD GROUP INFORMATION'})
+
+@login_required
+def groupInformationDetailfunc(request, groupId):
+    group = MgtGroup.objects.get(groupId=groupId)
+    if(SiteUser.objects.get(userId=group.adminUserId) == request.user):
+        return render(request, 'groupInformationEdit.html', {'pageTitle':'Group Infromation List'})
+    if(EntryGroup.objects.filter(groupId=groupId, userId=request.user.userId).exists()):
+        return render(request, 'groupInformationDetail.html', {'pageTitle':'Group Infromation List'})
+    return redirect('error')
 
 @login_required
 def adminGroupDeletefunc(request, groupId):
@@ -246,7 +332,10 @@ def groupDetailfunc(request, groupId):
             adminUserName = SiteUser.objects.get(userId=adminUserId).firstName + ' ' + SiteUser.objects.get(userId=adminUserId).lastName
             #グループの参加人数
             entryGroupNum = EntryGroup.objects.filter(groupId=groupId).count()
-            return render(request, 'groupDetail.html', {'group':entryGroup,'adminUserName':adminUserName,'groupNum':entryGroupNum})
+            #お知らせ
+            groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk')[:5]
+            groupInformationCount = groupInformation.count()
+            return render(request, 'groupDetail.html', {'group':entryGroup,'adminUserName':adminUserName,'groupNum':entryGroupNum, 'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount})
         #グループへの参加ページ
         else:
             return render(request, 'entryGroup.html', {'group':entryGroup,})

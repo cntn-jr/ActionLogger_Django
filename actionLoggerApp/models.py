@@ -151,3 +151,20 @@ class EntryGroup(models.Model):
         null=False,
         blank=False,
     )
+
+class GroupInformation(models.Model):
+    groupId=models.ForeignKey(
+        MgtGroup,on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
+    informationTitle=models.CharField(
+        null=False,
+        blank=False,
+        max_length=30,
+    )
+    informationText=models.TextField(
+        null=False,
+        blank=False,
+        max_length=200,
+    )

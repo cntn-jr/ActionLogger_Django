@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import SiteUser, ActionLog, MgtGroup, EntryGroup
+from .models import SiteUser, ActionLog, MgtGroup, EntryGroup, GroupInformation
 
 # Register your models here.
 
@@ -58,3 +58,4 @@ admin.site.register(SiteUser)
 admin.site.register(ActionLog)
 admin.site.register(MgtGroup)
 admin.site.register(EntryGroup)
+admin.site.register(GroupInformation)

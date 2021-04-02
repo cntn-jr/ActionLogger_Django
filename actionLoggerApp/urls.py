@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction, detailAction, errorfunc, myActionsfunc, createGroupfunc, adminGroupListfunc, adminGroupDetailfunc, adminGroupDeletefunc, searchGroupfunc, groupDetailfunc, groupWithdrawalfunc, entryGroupListfunc
+from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction, detailAction, errorfunc, myActionsfunc, createGroupfunc, adminGroupListfunc, adminGroupDetailfunc, adminGroupDeletefunc, searchGroupfunc, groupDetailfunc, groupWithdrawalfunc, entryGroupListfunc , groupInformationListfunc, addGroupInformationfunc
 
 urlpatterns = [
     path('signup/', signupfunc, name='signup'),
@@ -14,6 +14,8 @@ urlpatterns = [
     path('createGroup/', createGroupfunc ,name='createGroup'),
     path('adminGroupList/', adminGroupListfunc, name='adminGroupList'),
     path('adminGroupDetail/<str:groupId>', adminGroupDetailfunc, name='adminGroupDetail'),
+    path('groupInformationList/<str:groupId>', groupInformationListfunc, name='groupInformationList'),
+    path('addGroupInformation/<str:groupId>', addGroupInformationfunc, name='addGroupInformation'),
     path('adminGroupDelete/<str:groupId>', adminGroupDeletefunc, name='adminGroupDelete'),
     path('searchGroup/', searchGroupfunc, name='searchGroup'),
     path('groupDetail/<str:groupId>', groupDetailfunc, name='groupDetail'),

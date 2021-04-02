@@ -9,9 +9,29 @@
             <p class='text-center'>
                 参加人数：{{groupNum}}名
             </p>
+            <div class='text-right mr-4 pt-3'>
+                <a href='{% url 'groupWithdrawal' group.groupId %}' class='text-danger'>退会</a>
+            </div>
         </div>
-        <div class='text-right pr-2'>
-            <a href='{% url 'groupWithdrawal' group.groupId %}' class='text-danger'>退会</a>
+        <div>
+            <div class='alert alert-primary text-center mt-5 col-4 mx-auto'>
+                お知らせ
+            </div>
+            <div>
+            {% if groupInformationCount == 0 %}
+                <div class='text-center alert alert-primary mx-auto mt-4'>現在、お知らせはないです</div>
+            {% else %}
+                <table class='table'>
+                    {% for info in groupInformation %}
+                    <tr>
+                        <td>
+                            {{info.informationTitle}}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+            <div>
         </div>
     </div>
 {% endblock content %}
