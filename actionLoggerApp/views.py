@@ -310,6 +310,12 @@ def groupInformationDetailfunc(request, pk):
         information = GroupInformation.objects.get(pk=pk)
         title = request.POST['title']
         content = request.POST['content']
+        titleRegex = '^[\S]{1,30}$'
+        contentRegex = '^[\S]{1,200}$'
+        if(not re.match(titleRegex, title)):
+            return redirect('groupInformationDetail', information.pk)
+        if(not re.match(contentRegex, content)):
+            return redirect('groupInformationDetail', information.pk)
         information.informationTitle = title
         information.informationContent = content
         information.save()
