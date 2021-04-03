@@ -277,8 +277,21 @@ def groupInformationListfunc(request, groupId):
     return redirect('error')
 
 @login_required
-def addGroupInformationfunc(request):
-    return render(request, '', {'pageTitle':'ADD GROUP INFORMATION'})
+def addGroupInformationfunc(request,groupId):
+    if request.method == 'GET':
+        return render(request, 'addGroupInformation.html', {'pageTitle':'ADD GROUP INFORMATION'})
+    else:
+        title = request.POST['title']
+        content = request.POST['content']
+        titleRegex = '^[\S]{1,30}$'
+        contentRegex = '^[\S]{1,200}$'
+        if(not re.match(titleRegex, title)):
+            return redirect('addGroupInformation', groupId)
+        if(not re.match(contentRegex, content)):
+            return redirect('addGroupInformation', groupId)
+        information = GroupInformation(groupId=MgtGroup.objects.get(groupId=groupId), informationTitle=title, informationText=content)
+        information.save()
+        return redirect('adminGroupDetail', groupId)
 
 @login_required
 def groupInformationDetailfunc(request, groupId):
