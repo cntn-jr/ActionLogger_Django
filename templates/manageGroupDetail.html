@@ -21,7 +21,9 @@
             </div>
             <div class='mx-5  col-5'>
                 <div class='alert alert-primary text-center mt-5 col-4 mx-auto'>
-                    お知らせ
+                    <a class='text-reset' href='{% url 'groupInformationList' mgtGroup.groupId %}'>
+                        お知らせ
+                    </a>
                 </div>
                 <div>
                 {% if groupInformationCount == 0 %}
@@ -31,7 +33,9 @@
                         {% for info in groupInformation %}
                         <tr>
                             <td>
-                                {{info.informationTitle}}
+                                <a class='text-reset text-truncate' href='{% url 'groupInformationDetail' info.pk %}'>
+                                    {{info.informationTitle}}
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}

@@ -197,7 +197,7 @@ def adminGroupDetailfunc(request, groupId):
         return redirect('error')
     if(request.method == 'GET'):
         #お知らせ
-        groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk')[:5]
+        groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()[:5]
         groupInformationCount = groupInformation.count()
         return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup,  'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount})
     else:
@@ -209,7 +209,7 @@ def adminGroupDetailfunc(request, groupId):
 @login_required
 def groupInformationListfunc(request, groupId):
     group = MgtGroup.objects.get(groupId=groupId)
-    information = GroupInformation.objects.filter(groupId=groupId)
+    information = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()
     if(SiteUser.objects.get(userId=group.adminUserId) == request.user):
         informationCount = information.count() #自分の行動履歴の総数
         pageCount = int( ( information.count() - 1 + 10 ) / 10 )  #自分の行動履歴の全ページ数(10件ごと)
@@ -294,13 +294,26 @@ def addGroupInformationfunc(request,groupId):
         return redirect('adminGroupDetail', groupId)
 
 @login_required
-def groupInformationDetailfunc(request, groupId):
-    group = MgtGroup.objects.get(groupId=groupId)
-    if(SiteUser.objects.get(userId=group.adminUserId) == request.user):
-        return render(request, 'groupInformationEdit.html', {'pageTitle':'Group Infromation List'})
-    if(EntryGroup.objects.filter(groupId=groupId, userId=request.user.userId).exists()):
-        return render(request, 'groupInformationDetail.html', {'pageTitle':'Group Infromation List'})
-    return redirect('error')
+def groupInformationDetailfunc(request, pk):
+    information = GroupInformation.objects.get(pk=pk)
+    group = MgtGroup.objects.get(groupId=information.groupId.groupId)
+    if(request.method == 'GET'):
+        if(SiteUser.objects.get(userId=group.adminUserId) == request.user):
+            #管理者の場合
+            return render(request, 'groupInformationEdit.html', {'pageTitle':'Group Infromation List', 'information':information})
+        if(EntryGroup.objects.filter(groupId=groupId, userId=request.user.userId).exists()):
+            #参加者の場合
+            information = GroupInformation.objects.get(pk=pk)
+            return render(request, 'groupInformationDetail.html', {'pageTitle':'Group Infromation List', 'information':information})
+        return redirect('error')
+    else:
+        information = GroupInformation.objects.get(pk=pk)
+        title = request.POST['title']
+        content = request.POST['content']
+        information.informationTitle = title
+        information.informationContent = content
+        information.save()
+        return redirect('groupInformationDetail', pk)
 
 @login_required
 def adminGroupDeletefunc(request, groupId):
