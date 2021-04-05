@@ -1,0 +1,27 @@
+{% extends 'base_manageGroup.html' %}
+{% block content2 %}
+    <div class='alert alert-primary text-center mt-5 col-4 mx-auto'>
+        <a class='text-reset' href='{% url 'groupInformationList' mgtGroup.groupId %}'>
+            お知らせ
+        </a>
+    </div>
+    <div>
+    {% if groupInformationCount == 0 %}
+            <div class='text-center alert alert-primary mx-auto mt-4'>現在、お知らせはないです</div>
+    {% else %}
+        <table class='table'>
+            {% for info in groupInformation %}
+            <tr>
+                <td>
+                    <a class='text-reset text-truncate' href='{% url 'groupInformationDetail' info.pk %}'>
+                       {{info.informationTitle}}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+            {% endif %}
+        <div class='text-right mt-4'>
+            <a href="{% url 'addGroupInformation' mgtGroup.groupId %}" class="btn btn-outline-primary col-5" role="button" aria-pressed="true">ADD</a>
+        </div>
+{% endblock content2 %}

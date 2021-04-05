@@ -199,12 +199,31 @@ def adminGroupDetailfunc(request, groupId):
         #お知らせ
         groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()[:5]
         groupInformationCount = groupInformation.count()
-        return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup,  'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount})
+        return render(request, 'manageGroupDetail.html', {'pageTitle':'GROUP DETAIL','mgtGroup':manageGroup,  'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount, 'detailNav':'active'})
     else:
         groupName = request.POST['groupName']
         manageGroup.groupName = groupName
         manageGroup.save()
         return redirect('adminGroupDetail',manageGroup.groupId)
+
+@login_required
+def adminGroupInformationfunc(request, groupId):
+    manageGroup = MgtGroup.objects.get(groupId=groupId)
+    if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
+        return redirect('error')
+    #お知らせ
+    groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()[:5]
+    groupInformationCount = groupInformation.count()
+    return render(request, 'manageGroupInformation.html', {'pageTitle':'GROUP INFORMATION','mgtGroup':manageGroup,  'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount, 'informationNav': 'active'})
+
+@login_required
+def adminGroupActionfunc(request, groupId):
+    manageGroup = MgtGroup.objects.get(groupId=groupId)
+    if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
+        return redirect('error')
+    #グループの参加者の行動履歴
+    
+    return render(request, 'manageGroupInformation.html', {'pageTitle':'GROUP INFORMATION','mgtGroup':manageGroup,   'actionNav': 'active'})
 
 @login_required
 def groupInformationListfunc(request, groupId):
@@ -241,7 +260,7 @@ def groupInformationListfunc(request, groupId):
         nextPage = page + 1#次ページ
         if(nextPage > pageCount):
             nextPage = pageCount
-        return render(request, 'groupInformationList.html', {'pageTitle':'Group Infromation List', 'information':information ,'pageCount':range(pageCount), 'informationCount':informationCount, 'previousPage':previousPage, 'nextPage':nextPage})
+        return render(request, 'groupInformationList.html', {'pageTitle':'Group Infromation List', 'information':information ,'pageCount':range(pageCount), 'informationCount':informationCount, 'previousPage':previousPage, 'nextPage':nextPage, 'group':group})
     if(EntryGroup.objects.filter(groupId=groupId, userId=request.user.userId).exists()):
         informationCount = information.count() #自分の行動履歴の総数
         pageCount = int( ( information.count() - 1 + 10 ) / 10 )  #自分の行動履歴の全ページ数(10件ごと)
@@ -273,7 +292,7 @@ def groupInformationListfunc(request, groupId):
         nextPage = page + 1#次ページ
         if(nextPage > pageCount):
             nextPage = pageCount
-        return render(request, 'groupInformationList.html', {'pageTitle':'Group Infromation List', 'information':information ,'pageCount':range(pageCount), 'informationCount':informationCount, 'previousPage':previousPage, 'nextPage':nextPage})
+        return render(request, 'groupInformationList.html', {'pageTitle':'Group Infromation List', 'information':information ,'pageCount':range(pageCount), 'informationCount':informationCount, 'previousPage':previousPage, 'nextPage':nextPage, 'group':0})
     return redirect('error')
 
 @login_required
@@ -301,7 +320,7 @@ def groupInformationDetailfunc(request, pk):
         if(SiteUser.objects.get(userId=group.adminUserId) == request.user):
             #管理者の場合
             return render(request, 'groupInformationEdit.html', {'pageTitle':'Group Infromation List', 'information':information})
-        if(EntryGroup.objects.filter(groupId=groupId, userId=request.user.userId).exists()):
+        if(EntryGroup.objects.filter(groupId=group.groupId, userId=request.user.userId).exists()):
             #参加者の場合
             information = GroupInformation.objects.get(pk=pk)
             return render(request, 'groupInformationDetail.html', {'pageTitle':'Group Infromation List', 'information':information})
@@ -365,7 +384,7 @@ def groupDetailfunc(request, groupId):
             #グループの参加人数
             entryGroupNum = EntryGroup.objects.filter(groupId=groupId).count()
             #お知らせ
-            groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk')[:5]
+            groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()[:5]
             groupInformationCount = groupInformation.count()
             return render(request, 'groupDetail.html', {'group':entryGroup,'adminUserName':adminUserName,'groupNum':entryGroupNum, 'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount})
         #グループへの参加ページ

@@ -1,0 +1,21 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container col-6 mt-5'>
+        <div class="text-center mb-4">
+            <h1 class="h3 mb-3 font-weight-normal">Add Information</h1>
+            <p class='text-danger'>{{error}}</p>
+        </div>
+        <div class="form-group mt-5">
+            <label for="exampleFormControlInput1">Information Title</label>
+            <div class="border border-secondary p-3 m-3">
+                {{ information.informationTitle }}
+            </div>
+        </div>
+        <div class="form-group mt-5">
+            <label for="exampleFormControlInput1">Information Content</label>
+            <div class="border border-secondary p-3 m-3">
+                {{ information.informationText }}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

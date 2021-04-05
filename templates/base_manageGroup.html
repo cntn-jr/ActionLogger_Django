@@ -1,0 +1,20 @@
+{% extends 'base_dashboard.html' %}
+{% block content %}
+    <div class='container mt-4 col-8'>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link text-reset {{detailNav}}" href="{% url 'adminGroupDetail' mgtGroup.groupId %}">グループ情報</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-reset {{informationNav}}" href="{% url 'adminGroupInformation' mgtGroup.groupId %}">お知らせ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-reset {{actionNav}}" href="#">行動履歴</a>
+            </li>
+        </ul>
+        <div class='col-8 mx-auto'>
+            {% block content2 %}
+            {% endblock content2 %}
+        </div>
+    </div>
+{% endblock content %}
