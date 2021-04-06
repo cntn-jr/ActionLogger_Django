@@ -11,6 +11,7 @@ from .myfunc.myfunc import isTime, dateFormat
 from django.utils.datastructures import MultiValueDictKeyError
 from urllib.parse import urlencode
 import re
+from django.db.models import Q
 # Create your views here.
 def signupfunc(request):
     if request.method=='GET':
@@ -222,8 +223,56 @@ def adminGroupActionfunc(request, groupId):
     if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
         return redirect('error')
     #グループの参加者の行動履歴
-    
-    return render(request, 'manageGroupInformation.html', {'pageTitle':'GROUP INFORMATION','mgtGroup':manageGroup,   'actionNav': 'active'})
+    actions = []
+    participants = EntryGroup.objects.filter(groupId=manageGroup.groupId)
+    allActions = ActionLog.objects.all().order_by('submitTime').reverse()
+    for action in allActions:
+        for man in participants:
+            if action.userId == man.userId:
+                actions.append(action)
+
+    actionsCount = len(actions) #行動履歴の総数
+    pageCount = int( ( actionsCount - 1 + 10 ) / 10 )  #自分の行動履歴の全ページ数(10件ごと)
+    if(actionsCount == 0):
+        #０になった場合
+        pageCount = 1
+
+    redirect_url = reverse('adminGroupAction',kwargs={'groupId':groupId}) #nameからURLパターンを取得
+    try:
+        page = int(request.GET['page'])
+        #try文は、不正な値への対策
+        if(page < 1):
+            parameters = urlencode({'page': 1}) #パラメータをURLで使える形に
+            url = f'{redirect_url}?{parameters}' #URL
+            return redirect(url)
+        if(page > pageCount):
+            parameters = urlencode({'page': pageCount})
+            url = f'{redirect_url}?{parameters}'
+            return redirect(url)
+    except ValueError:
+        parameters = urlencode({'page': 1})
+        url = f'{redirect_url}?{parameters}'
+        return redirect(url)
+    except MultiValueDictKeyError:
+        parameters = urlencode({'page': 1})
+        url = f'{redirect_url}?{parameters}'
+        return redirect(url)
+    actions = actions[page*10-10:page*10-1]
+
+    #前ページ
+    previousPage = page - 1
+    if(previousPage < 1):
+        previousPage = 1
+    #次ページ
+    nextPage = page + 1
+    if(nextPage > pageCount):
+        nextPage = pageCount
+
+    for log in actions:
+        log.departureTime = dateFormat(log.departureTime)
+        log.goHomeTime = dateFormat(log.goHomeTime)
+
+    return render(request, 'manageGroupAction.html', {'pageTitle':'GROUP INFORMATION','mgtGroup':manageGroup, 'actions':actions, 'actionNav': 'active', 'pageCount':range(pageCount), 'actionsCount':actionsCount, 'previousPage':previousPage, 'nextPage':nextPage})
 
 @login_required
 def groupInformationListfunc(request, groupId):

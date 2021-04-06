@@ -9,10 +9,10 @@
                 <a class="nav-link text-reset {{informationNav}}" href="{% url 'adminGroupInformation' mgtGroup.groupId %}">お知らせ</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-reset {{actionNav}}" href="#">行動履歴</a>
+                <a class="nav-link text-reset {{actionNav}}" href="{% url 'adminGroupAction' mgtGroup.groupId %}">行動履歴</a>
             </li>
         </ul>
-        <div class='col-8 mx-auto'>
+        <div class='col-10 mx-auto'>
             {% block content2 %}
             {% endblock content2 %}
         </div>

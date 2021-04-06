@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction, detailAction, errorfunc, myActionsfunc, createGroupfunc, adminGroupListfunc, adminGroupDetailfunc, adminGroupDeletefunc, searchGroupfunc, groupDetailfunc, groupWithdrawalfunc, entryGroupListfunc , groupInformationListfunc, addGroupInformationfunc, groupInformationDetailfunc, adminGroupInformationfunc
+from .views import loginfunc, topPagefunc, updateUserfunc, logoutfunc, signupfunc, deleteUser, createAction, detailAction, errorfunc, myActionsfunc, createGroupfunc, adminGroupListfunc, adminGroupDetailfunc, adminGroupDeletefunc, searchGroupfunc, groupDetailfunc, groupWithdrawalfunc, entryGroupListfunc , groupInformationListfunc, addGroupInformationfunc, groupInformationDetailfunc, adminGroupInformationfunc, adminGroupActionfunc
 
 urlpatterns = [
     path('signup/', signupfunc, name='signup'),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('adminGroupList/', adminGroupListfunc, name='adminGroupList'),
     path('adminGroupDetail/<str:groupId>', adminGroupDetailfunc, name='adminGroupDetail'),
     path('adminGroupInformation/<str:groupId>', adminGroupInformationfunc, name='adminGroupInformation'),
+    path('adminGroupAction/<str:groupId>', adminGroupActionfunc, name='adminGroupAction'),
     path('groupInformationList/<str:groupId>', groupInformationListfunc, name='groupInformationList'),
     path('addGroupInformation/<str:groupId>', addGroupInformationfunc, name='addGroupInformation'),
     path('groupInformationDetail/<int:pk>', groupInformationDetailfunc, name='groupInformationDetail'),
