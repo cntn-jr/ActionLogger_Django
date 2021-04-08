@@ -12,29 +12,25 @@
                             <th scope="col">開始</th>
                             <th scope="col">終了</th>
                             <th scope="col">場所</th>
-                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for log in actions %}
                             <tr>
                                 <td class='text-left'>
-                                    <a href='#' class='text-reset'>
+                                    <a href='{% url 'adminGroupActionDetail' mgtGroup.groupId log.pk %}' class='text-reset'>
                                         {{ log.departureTime }}
                                     </a>
                                 </td>
                                 <td class='text-left'>
-                                    <a href='#' class='text-reset'>
+                                    <a href='{% url 'adminGroupActionDetail' mgtGroup.groupId log.pk %}' class='text-reset'>
                                         {{ log.goHomeTime }}
                                     </a>
                                 </td>
                                 <td class='text-left text-truncate'>
-                                    <a href='#' class='text-reset'>
+                                    <a href='{% url 'adminGroupActionDetail' mgtGroup.groupId log.pk %}a' class='text-reset'>
                                         {{ log.place }}
                                     </a>
-                                </td>
-                                <td class='text-center'>
-                                    <a class="text-reset" href="#">詳細を見る...</a>
                                 </td>
                             </tr>
                         {% endfor %}

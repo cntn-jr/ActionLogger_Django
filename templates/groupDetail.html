@@ -1,6 +1,6 @@
-{% extends 'base_dashboard.html' %}
-{% block content %}
-    <div class='container col-5 mt-3'>
+{% extends 'base_group.html' %}
+{% block content2 %}
+    <div class='container col-8 mt-3'>
         <div class="alert alert-info mt-5 py-5" role="alert">
             <h4 class="alert-heading text-center">グループ名：{{ group.groupName }}</h4>
             <p class='text-center mt-4'>
@@ -13,29 +13,5 @@
                 <a href='{% url 'groupWithdrawal' group.groupId %}' class='text-danger'>退会</a>
             </div>
         </div>
-        <div>
-            <div class='alert alert-primary text-center mt-5 col-4 mx-auto'>
-                <a class='text-reset' href='{% url 'groupInformationList' group.groupId %}'>
-                    お知らせ
-                </a>
-            </div>
-            <div>
-            {% if groupInformationCount == 0 %}
-                <div class='text-center alert alert-primary mx-auto mt-4'>現在、お知らせはないです</div>
-            {% else %}
-                <table class='table'>
-                    {% for info in groupInformation %}
-                    <tr>
-                        <td class=''>
-                            <a href='{% url 'groupInformationDetail' info.pk %}' class='text-reset ml-4'>
-                                {{info.informationTitle}}
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% endif %}
-            <div>
-        </div>
     </div>
-{% endblock content %}
+{% endblock content2 %}

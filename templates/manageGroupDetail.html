@@ -1,23 +1,23 @@
 {% extends 'base_manageGroup.html' %}
 {% block content2 %}
-    <div class='alert alert-info text-center mt-5 col-4 mx-auto'>
-        <h4>編集</h4>
-    </div>
-    <form method='POST'>
-        {% csrf_token %}
-        <div class='mt-4'>
-               <p>グループID</p>
-             <p class='mx-2 px-4 py-2 rounded-pill border border-secondary'>
-                {{ mgtGroup.groupId }}
-            </p>
+    <div class='col-8 mx-auto'>
+        <div class='alert alert-info text-center mt-5 col-4 mx-auto'>
+            <h5>編集</h5>
         </div>
-        <div class='mt-4'>
-            <p>グループ名</p>
-            <input class='mx-2 px-4 py-2 form-control border-secondary rounded-pill' id="exampleFormControlInput1" value='{{mgtGroup.groupName}}' name='groupName'>
+        <form method='POST'>
+            {% csrf_token %}
+            <div class='mt-4'>
+                <p>グループID</p>
+                <input class='mx-2 px-4 py-2 form-control border-secondary rounded-pill bg-white' id="exampleFormControlInput1" value='{{mgtGroup.groupName}}' readonly>
+            </div>
+            <div class='mt-4'>
+                <p>グループ名</p>
+                <input class='mx-2 px-4 py-2 form-control border-secondary rounded-pill' id="exampleFormControlInput1" value='{{mgtGroup.groupName}}' name='groupName'>
+            </div>
+            <button class="btn btn-lg btn-info btn-block mt-5 ml-2" type="submit">UPDATE</button>
+        </form>
+        <div class='text-right mt-4'>
+            <a class="text-danger" href="{% url 'adminGroupDelete' mgtGroup.groupId %}">削除する</a>
         </div>
-        <button class="btn btn-lg btn-info btn-block mt-5 ml-2" type="submit">UPDATE</button>
-    </form>
-    <div class='text-right mt-3'>
-        <a class="text-danger" href="{% url 'adminGroupDelete' mgtGroup.groupId %}">削除する</a>
     </div>
 {% endblock content2 %}

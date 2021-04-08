@@ -12,6 +12,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from urllib.parse import urlencode
 import re
 from django.db.models import Q
+import datetime
 # Create your views here.
 def signupfunc(request):
     if request.method=='GET':
@@ -172,6 +173,51 @@ def detailAction(request, pk):
         return redirect('error')
 
 @login_required
+def editAction(request, pk):
+    log = ActionLog.objects.get(pk=pk)
+    logUser = SiteUser.objects.get(userId=log.userId)
+    if request.method == 'GET':
+        departureMonth = log.departureTime.month
+        departureDay = log.departureTime.day
+        departureHour = log.departureTime.hour
+        homeMonth = log.goHomeTime.month
+        homeDay = log.goHomeTime.day
+        homeHour = log.goHomeTime.hour
+        if(request.user == logUser):#オブジェクトの比較　ユーザIDの比較ではうまくいかない
+            return render(request, 'editAction.html', {'pageTitle':'Detail Action', 'log':log, 'dMonth':departureMonth, 'dDay':departureDay, 'dHour':departureHour, 'hMonth':homeMonth, 'hDay':homeDay, 'hHour':homeHour,})
+        else:
+            return redirect('error')
+    else:
+        departureMonth=request.POST['departureMonth']
+        departureDay=request.POST['departureDay']
+        departureTime=request.POST['departureTime']
+        departureDate=isTime(departureMonth, departureDay, departureTime)
+        homeMonth=request.POST['homeMonth']
+        homeDay=request.POST['homeDay']
+        homeTime=request.POST['homeTime']
+        homeDate=isTime(homeMonth, homeDay, homeTime)
+        place=request.POST['place']
+        reason=request.POST['reason']
+        remarks=request.POST['remarks']
+        if( (departureDate.second == 30 | homeDate.second == 30) | (departureDate > homeDate)):
+            #正当な値（日付）が入力されなかった場合
+            redirect('detailAction', pk)
+        if(not re.match('\S', place)):
+            #場所と理由が入力されなかった場合
+            redirect('detailAction', pk)
+        if(not re.match('\S', reason)):
+            #場所と理由が入力されなかった場合
+            redirect('detailAction', pk)
+        log.departureTime = departureDate
+        log.goHomeTime = homeDate
+        log.place = place
+        log.reason = reason
+        log.remarks = remarks
+        log.save()
+        return redirect('detailAction',pk)
+
+
+@login_required
 def createGroupfunc(request):
     if(request.method == 'POST'):   #グループの作成処理
         groupId=request.POST['groupId']
@@ -273,6 +319,16 @@ def adminGroupActionfunc(request, groupId):
         log.goHomeTime = dateFormat(log.goHomeTime)
 
     return render(request, 'manageGroupAction.html', {'pageTitle':'GROUP INFORMATION','mgtGroup':manageGroup, 'actions':actions, 'actionNav': 'active', 'pageCount':range(pageCount), 'actionsCount':actionsCount, 'previousPage':previousPage, 'nextPage':nextPage})
+
+@login_required
+def adminGroupActionDetailfunc(request, groupId, pk):
+    manageGroup = MgtGroup.objects.get(groupId=groupId)
+    action = ActionLog.objects.get(pk=pk)
+    if(not (SiteUser.objects.get(userId=manageGroup.adminUserId) == request.user)):
+        return redirect('error')
+    action.departureTime = dateFormat(action.departureTime)
+    action.goHomeTime = dateFormat(action.goHomeTime)
+    return render(request, 'manageGroupActionDetail.html', {'pageTitle':'ACTION LOG', 'mgtGroup':manageGroup,'action':action, 'actionNav': 'active', })
 
 @login_required
 def groupInformationListfunc(request, groupId):
@@ -415,6 +471,7 @@ def searchGroupfunc(request):
     else:
         return render(request, 'searchGroup.html', {'pageTitle':'ENTRY GROUP',})
 
+@login_required
 def groupDetailfunc(request, groupId):
     if(request.method == 'POST'):
         entryGroup = EntryGroup(groupId=MgtGroup.objects.get(groupId=groupId), userId=request.user)
@@ -435,7 +492,29 @@ def groupDetailfunc(request, groupId):
             #お知らせ
             groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()[:5]
             groupInformationCount = groupInformation.count()
-            return render(request, 'groupDetail.html', {'group':entryGroup,'adminUserName':adminUserName,'groupNum':entryGroupNum, 'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount})
+            return render(request, 'groupDetail.html', {'group':entryGroup,'adminUserName':adminUserName,'groupNum':entryGroupNum, 'detailNav':'active'})
+        #グループへの参加ページ
+        else:
+            return render(request, 'entryGroup.html', {'group':entryGroup,})
+    return redirect('error')
+
+@login_required
+def groupInformationfunc(request, groupId, ):
+    if(request.method == 'POST'):
+        entryGroup = EntryGroup(groupId=MgtGroup.objects.get(groupId=groupId), userId=request.user)
+        entryGroup.save()
+        return redirect('groupDetail',groupId)
+    else:
+        entryGroup = MgtGroup.objects.get(groupId=groupId)
+        #グループの管理者であれば
+        if(request.user == SiteUser.objects.get(userId=entryGroup.adminUserId)):
+            return redirect('adminGroupDetail', entryGroup.groupId)
+        #グループに参加していれば
+        if(EntryGroup.objects.filter(groupId=groupId,userId=request.user.userId).exists()):
+            #お知らせ
+            groupInformation = GroupInformation.objects.filter(groupId=groupId).order_by('pk').reverse()[:5]
+            groupInformationCount = groupInformation.count()
+            return render(request, 'groupInformation.html', {'group':entryGroup,'groupInformation':groupInformation, 'groupInformationCount':groupInformationCount, 'informationNav':'active'})
         #グループへの参加ページ
         else:
             return render(request, 'entryGroup.html', {'group':entryGroup,})
